@@ -112,3 +112,59 @@ goldbach n | n > 2 && even n ==>> length (pares n) > 0 = True
 
 goldbachHasta :: Integer -> Bool
 goldbachHasta n = and ([goldbach x | x <- [0..n], even x])
+
+--Ejercicio 10
+esPerfecto :: Integer -> Bool
+esPerfecto n = if(sum (init (divisores n)) == n) then True
+              else False
+
+perfectosMenoresQue :: Integer -> [Integer]
+perfectosMenoresQue n = [x | x <- [1..n], esPerfecto x]
+
+--Ejercicio 11
+take' :: Int -> [a] -> [a]
+take' n xs = [x | (p,x) <- zip [0.. n-1] xs]
+
+drop' :: Int -> [a] -> [a]
+drop' n xs = [x | (p,x) <- zip [0..length xs] xs, p >= n]
+
+--Ejercicio 12
+concat' :: [[a]] -> [a]
+concat' xs = foldr (++) [] xs
+
+concat'' :: [[a]] -> [a]
+concat'' (x:xs) = [n | y <- (x : xs), n <- y]
+
+--Ejercicio 14
+inserta :: (Ord a) => a -> [a] -> [a]
+inserta x xs = takeWhile (<x) xs ++ [x] ++ dropWhile (<x) xs
+
+inserta' :: (Ord a) => a -> [a] -> [a]
+inserta' n [] = [n]
+inserta' n (x:xs) | n < x = n : (x:xs)
+                  | otherwise = x : (inserta' n xs)
+
+ordena :: (Ord a) => [a] -> [a]
+ordena xs = foldr (inserta) [] xs
+
+--Ejercicio 15
+geometrica :: Integer -> Integer -> [Integer]
+geometrica n m = take 100 (iterate (*m) n)
+
+multiplosDe :: Integer -> [Integer]
+multiplosDe 0 = []
+multiplosDe n = iterate (+n) n
+
+potenciasDe :: Integer -> [Integer]
+potenciasDe 0 = []
+potenciasDe n = take 10 (iterate (*n) 1)
+
+--Ejercicio 16
+primeroComun :: (Ord a) => [a] -> [a] -> a
+primeroComun [] [] = error "Ambas listas vacias"
+primeroComun (x:xs) (y:ys) | x < y = primeroComun xs (y:ys)
+                           | y < x = primeroComun (x:xs) ys
+                           | otherwise = x
+
+mcm' :: Integer -> Integer -> Integer
+mcm' n m = primeroComun (multiplosDe n) (multiplosDe m)
