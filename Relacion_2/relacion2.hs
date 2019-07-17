@@ -6,6 +6,7 @@
 -- Relación de Ejercicios 2.
 
 import Test.QuickCheck
+import Data.List
 
 --Ejercicio 1
 data Direction = North | South | East | West deriving (Eq, Enum, Show)
@@ -168,3 +169,43 @@ primeroComun (x:xs) (y:ys) | x < y = primeroComun xs (y:ys)
 
 mcm' :: Integer -> Integer -> Integer
 mcm' n m = primeroComun (multiplosDe n) (multiplosDe m)
+
+--Ejercicio 17
+primeroComunDeTres :: Ord a => [a] -> [a] -> [a] -> a
+primeroComunDeTres (x:xs) (y:ys) (z:zs) | x > y = primeroComunDeTres (x:xs) ys (z:zs)
+                                        | x > z = primeroComunDeTres (x:xs) (y:ys) zs
+                                        | y > x = primeroComunDeTres xs (y:ys) (z:zs)
+                                        | y > z = primeroComunDeTres (x:xs) (y:ys) zs
+                                        | z > x = primeroComunDeTres xs (y:ys) (z:zs)
+                                        | z > y = primeroComunDeTres (x:xs) ys (z:zs)
+                                        | otherwise = x
+
+--Ejercicio 19
+
+factPrimos :: Integer -> [Integer]
+factPrimos x = fp x 2
+  where
+    fp x d
+      | x' < d = [x]
+      | r == 0 = d : fp x' d
+      | otherwise = fp x (d+1)
+        where
+            (x',r) = divMod x d  
+
+mezcla :: Ord a => [a] -> [a] -> [a]
+mezcla [] ys = ys
+mezcla xs [] = xs
+mezcla (x:xs) (y:ys) | x == y = x: mezcla xs ys
+                     | x <= y = x: mezcla xs (y:ys)
+                     | otherwise = y: mezcla (x:xs) ys
+
+--Ejercicio 20                     
+mezcla' :: Ord a => [a] -> [a] -> [a]
+mezcla' [] ys = []
+mezcla' xs [] = []
+mezcla' (x:xs) (y:ys) | x == y = x: mezcla' xs ys
+                      | x < y = mezcla' xs (y:ys)
+                      | otherwise = mezcla' (x:xs) ys
+
+mcd'' :: Integer -> Integer -> Integer
+mcd'' n m = product (mezcla' (factPrimos n) (factPrimos m))
